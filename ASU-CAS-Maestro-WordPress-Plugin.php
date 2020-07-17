@@ -1,13 +1,13 @@
 <?php
 /*
 Plugin Name: ASU CAS Maestro
-Plugin URL: https://github.com/asu-ke-web-services/asu-cas-maestro
+Plugin URL: https://github.com/asu-ke-web-services/ASU-CAS-Maestro-WordPress-Plugin
 Description: CAS authentication plugin customized for use by the ASU WordPress community
 Version: 2.0.0
 Author: NME - Núcleo de Multimédia e E-Learning.
 Author URI: http://nme.ist.utl.pt
 Text Domain: CAS_Maestro
-GitHub Plugin URI: https://github.com/asu-ke-web-services/asu-cas-maestro
+GitHub Plugin URI: https://github.com/asu-ke-web-services/ASU-CAS-Maestro-WordPress-Plugin
 */
 
 /*
