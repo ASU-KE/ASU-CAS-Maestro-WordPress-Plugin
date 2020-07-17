@@ -4,15 +4,15 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "137478fb74d03ad51486ab8040aa41db",
+    "content-hash": "5e9c7559f8d4d0062140f3f7992aee03",
     "packages": [
         {
-            "name": "gios-asu/asu-public-directory-service",
+            "name": "asu-ke-web-services/asu-public-directory-service",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/asu-ke-web-services/asu-public-directory-service",
-                "reference": "00c0b7a6498896c682ad8a7880fb947871a920ac"
+                "reference": "a2e4bd2845ae2e31e88b9ef246d9da0297a2b465"
             },
             "require": {
                 "php": ">=5.4"
@@ -23,12 +23,9 @@
             "type": "project",
             "autoload": {
                 "psr-4": {
-                    "Gios_Asu\\AsuPublicDirectoryService\\\\": "src/"
+                    "Asu_Research\\AsuPublicDirectoryService\\\\": "src/"
                 }
             },
-            "license": [
-                "MIT"
-            ],
             "authors": [
                 {
                     "name": "Nathan D. Rollins",
@@ -41,7 +38,7 @@
                 "directory",
                 "isearch"
             ],
-            "time": "2017-03-16T23:44:03+00:00"
+            "time": "2020-07-17T03:00:21+00:00"
         },
         {
             "name": "jasig/phpcas",
@@ -1540,7 +1537,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "gios-asu/asu-public-directory-service": 20
+        "asu-ke-web-services/asu-public-directory-service": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
