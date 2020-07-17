@@ -120,11 +120,11 @@ Welcome aboard!',
           'ldap_basedn' => '',
         );
 
-    $this->network_settings = get_site_option( 'wpCAS_network_settings', $default_settings );
+    $this->network_settings = get_site_option( 'asuCAS_network_settings', $default_settings );
 
     // Get blog settings. If they doesn't exist, get the network settings.
-    $this->settings = get_option( 'wpCAS_settings',$this->network_settings );
-    $this->allowed_users = get_option( 'wpCAS_allowed_users',array() );
+    $this->settings = get_option( 'asuCAS_settings',$this->network_settings );
+    $this->allowed_users = get_option( 'asuCAS_allowed_users',array() );
     $this->change_users_capability = 'edit_posts';
 
     if ( ! isset( $_SESSION ) ) {
@@ -768,7 +768,7 @@ Welcome aboard!',
       $updated_array = $optionarray_update;
 
       $this->settings = array_merge( $this->settings,$updated_array );
-      update_option( 'wpCAS_settings',$this->settings );
+      update_option( 'asuCAS_settings',$this->settings );
     }
 
     // Allowed users to register processing
@@ -784,7 +784,7 @@ Welcome aboard!',
 
     $this->allowed_users = $allowed_users;
 
-    update_option( 'wpCAS_allowed_users',$this->allowed_users );
+    update_option( 'asuCAS_allowed_users',$this->allowed_users );
 
     // Check for empty fields to output error message
     global $output_error;
