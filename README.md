@@ -23,9 +23,9 @@ Once signed in, you can access the plugin's settings at `wp-admin/options-genera
 
 If you happen to leave empty fields in CAS Maestro configuration, the plugin will ask you to fill fields before final activation. Therefore you can continue to use the normal WordPress login screen until all settings have been completed, even if the plugin is active.
 
-## Action and Filter hooks used and provided by the GIOS CAS Maestro plugin
+## Action and Filter hooks used and provided by the ASU CAS Maestro plugin
 
-GIOS CAS Maestro overrides the following WordPress filters:
+ASU CAS Maestro overrides the following WordPress filters:
 
 * authenticate
 * login_url
