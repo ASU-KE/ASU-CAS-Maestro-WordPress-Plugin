@@ -1,0 +1,31 @@
+{
+    "name": "asu-ke-web-services/asu-cas-maestro",
+    "description": "Custom version of the CAS Maestro WordPress plugin, including new Wordpress hooks to customize login and logout processes",
+    "type": "wordpress-plugin",
+    "authors": [
+        {
+            "name": "Nathan Rollins",
+            "email": "nathan.rollins@asu.edu"
+        }
+    ],
+    "license": "GPL v2",
+    "repositories": [
+        {
+            "url": "https://github.com/asu-ke-web-services/asu-public-directory-service",
+            "type": "git"
+        }
+    ],
+    "require": {
+        "gios-asu/asu-public-directory-service": "dev-master",
+        "jasig/phpcas": "^1.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.7.*"
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "rm -rf ./phpCAS",
+            "cp -r ./vendor/jasig/phpcas ./phpCAS"
+        ]
+    }
+}
