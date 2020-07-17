@@ -1,10 +1,22 @@
 # ASU CAS Maestro WordPress plugin
 
-This is a customized and updated version of the WordPress CAS Maestro plugin. It has been updated with:
+This is a customized and updated version of the WordPress CAS Maestro plugin. This project supercedes our previous plugin, the GIOS CAS Maestro plugin, which is now abandoned.
 
+The reason for abandoning GIOS CAS Maestro and releasing this new plugin was to permit this plugin to be reformatted to be compatible with the [GitHub Updater](https://github.com/afragen/github-updater) and preventing site breaking errors during the upgrade from older versions. 
+
+This plugin has been updated with:
+
+* compatibility with [GitHub Updater](https://github.com/afragen/github-updater)
 * default settings configured to connect to the ASU CAS authentication service,
 * support for pre-populating new user accounts with information retrieved from the ASU iSearch directory, and
 * new Wordpress hooks to inject custom logic into the user registration and logout processes.
+
+## Upgrade Notes - from the GIOS CAS Maestro plugin
+
+* **Clone this repo into your WordPress plugins directory (`/wp-content/plugins/`)**.
+* Deactivate the GIOS CAS Maestro pluginin the Wordpress 'Plugins' menu.
+* Activate this plugin in the Wordpress 'Plugins' menu.
+* verify the plugin settings for specific requirements on your site.
 
 ## Installation Instructions
 
