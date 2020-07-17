@@ -7,7 +7,7 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
   $server = $_POST['s'];
   $port = intval($_POST['p']);
   $directory = $_POST['d'];
-  $lib = __DIR__.'/../phpCAS/CAS.php';
+  $lib = __DIR__.'/../lib/phpCAS/CAS.php';
 
   if($fp = @fsockopen($server,$port,$errCode,$errStr,'4')){
     echo json_encode(1);

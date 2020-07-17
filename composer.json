@@ -24,8 +24,8 @@
     },
     "scripts": {
         "post-update-cmd": [
-            "rm -rf ./phpCAS",
-            "cp -r ./vendor/jasig/phpcas ./phpCAS"
+            "rm -rf ./lib/phpCAS",
+            "cp -r ./vendor/jasig/phpcas ./lib/phpCAS",
         ]
     }
 }

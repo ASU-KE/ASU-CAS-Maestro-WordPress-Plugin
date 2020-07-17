@@ -82,7 +82,7 @@ class CAS_Maestro {
           'server_hostname' => 'weblogin.asu.edu',
           'server_port' => '443',
           'server_path' => 'cas',
-          'phpcas_path' => 'phpCAS/',
+          'phpcas_path' => 'lib/phpCAS/',
           'debug_path' => '',
           'redirect_url' => get_option( 'siteurl' ),
           'email_registration' => 1,
@@ -152,7 +152,7 @@ Welcome aboard!',
        * had been installed, then set default value here
        */
       if ( empty( $this->settings['phpcas_path'] ) ) {
-        $this->settings['phpcas_path'] = 'phpCAS/';
+        $this->settings['phpcas_path'] = 'lib/phpCAS/';
       }
       include_once( $this->settings['phpcas_path'] . 'CAS.php' );
 
