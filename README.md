@@ -1,4 +1,4 @@
-# ASU CAS Maestro plugin
+# ASU CAS Maestro WordPress plugin
 
 This is a customized and updated version of the WordPress CAS Maestro plugin. It has been updated with:
 
