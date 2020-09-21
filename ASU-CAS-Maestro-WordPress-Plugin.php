@@ -94,7 +94,7 @@ class CAS_Maestro {
           'cas_user_email' => '',
           // Welcome email
           'welcome_mail' => array(
-              'send_user' => true,
+              'send_user' => false,
               'send_global' => false,
               'subject' => 'Welcome to %sitename%',
               'user_body' => 'Hello %realname%,
@@ -106,7 +106,7 @@ Welcome aboard!',
             ),
           // Waiting for access email
           'wait_mail' => array(
-              'send_user' => true,
+              'send_user' => false,
               'send_global' => false,
               'subject' => '',
               'user_body' => '',
