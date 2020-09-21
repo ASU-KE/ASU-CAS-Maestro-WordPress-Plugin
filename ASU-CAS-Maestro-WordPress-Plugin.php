@@ -77,7 +77,6 @@ class CAS_Maestro {
     $default_settings = array(
         'cas_menu_location' => 'settings',
         'new_user' => false,
-          'email_suffix' => '',
           'cas_version' => '2.0',
           'server_hostname' => 'weblogin.asu.edu',
           'server_port' => '443',
@@ -85,7 +84,8 @@ class CAS_Maestro {
           'phpcas_path' => 'lib/phpCAS/',
           'debug_path' => '',
           'redirect_url' => get_option( 'siteurl' ),
-          'email_registration' => 1,
+          'email_registration' => 2,
+          'email_suffix' => 'asu.edu',
           'global_sender' => get_bloginfo( 'admin_email' ),
           'full_name' => '',
           // CAS attributes
