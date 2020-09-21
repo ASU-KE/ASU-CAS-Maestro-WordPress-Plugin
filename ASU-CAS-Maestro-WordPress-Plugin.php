@@ -545,8 +545,8 @@ Welcome aboard!',
       switch ( $this->settings['cas_menu_location'] ) {
         case 'sidebar':
           $settings_page = add_menu_page(
-              __( 'CAS Maestro Settings', 'CAS_Maestro' ),
-              __( 'CAS Maestro', 'CAS_Maestro' ),
+              __( 'ASU CAS Maestro Settings', 'CAS_Maestro' ),
+              __( 'ASU CAS Maestro', 'CAS_Maestro' ),
               'manage_options',
               'wpcas_settings',
               array( &$this,'admin_interface' ),
@@ -557,8 +557,8 @@ Welcome aboard!',
         case 'settings':
         default:
           $settings_page = add_options_page(
-            __( 'CAS Maestro', 'CAS_Maestro' ),
-            __( 'CAS Maestro', 'CAS_Maestro' ),
+            __( 'ASU CAS Maestro', 'CAS_Maestro' ),
+            __( 'ASU CAS Maestro', 'CAS_Maestro' ),
             'manage_options',
             'wpcas_settings',
             array( &$this,'admin_interface' )
@@ -567,8 +567,8 @@ Welcome aboard!',
       }
     } elseif ( ! current_user_can( 'manage_options' ) && current_user_can( $this->change_users_capability ) ) {
       $settings_page = add_menu_page(
-          __( 'CAS Maestro Settings', 'CAS_Maestro' ),
-          __( 'CAS Maestro', 'CAS_Maestro' ),
+          __( 'ASU CAS Maestro Settings', 'CAS_Maestro' ),
+          __( 'ASU CAS Maestro', 'CAS_Maestro' ),
           $this->change_users_capability,
           'wpcas_settings',
           array( &$this,'admin_interface' ),
