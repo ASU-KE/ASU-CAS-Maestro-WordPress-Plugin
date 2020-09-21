@@ -78,7 +78,7 @@ class CAS_Maestro {
         'cas_menu_location' => 'settings',
         'new_user' => false,
           'email_suffix' => '',
-          'cas_version' => '1.0',
+          'cas_version' => '2.0',
           'server_hostname' => 'weblogin.asu.edu',
           'server_port' => '443',
           'server_path' => 'cas',
