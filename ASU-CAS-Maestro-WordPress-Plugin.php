@@ -125,7 +125,7 @@ Welcome aboard!',
     // Get blog settings. If they doesn't exist, get the network settings.
     $this->settings = get_option( 'asuCAS_settings',$this->network_settings );
     $this->allowed_users = get_option( 'asuCAS_allowed_users',array() );
-    $this->change_users_capability = 'edit_posts';
+    $this->change_users_capability = 'manage_options';
 
     if ( ! isset( $_SESSION ) ) {
       session_start();
