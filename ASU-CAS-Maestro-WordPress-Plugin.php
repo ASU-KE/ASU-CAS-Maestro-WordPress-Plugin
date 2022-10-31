@@ -3,7 +3,7 @@
 Plugin Name: ASU CAS Maestro
 Plugin URL: https://github.com/asu-ke-web-services/ASU-CAS-Maestro-WordPress-Plugin
 Description: CAS authentication plugin customized for use by the ASU WordPress community
-Version: 2.1.0
+Version: 2.1.1
 Author: NME - Núcleo de Multimédia e E-Learning.
 Author URI: http://nme.ist.utl.pt
 Text Domain: CAS_Maestro
