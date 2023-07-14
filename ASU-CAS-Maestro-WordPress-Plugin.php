@@ -7,7 +7,10 @@ Version: 2.1.1
 Author: NME - Núcleo de Multimédia e E-Learning.
 Author URI: http://nme.ist.utl.pt
 Text Domain: CAS_Maestro
-GitHub Plugin URI: https://github.com/asu-ke-web-services/ASU-CAS-Maestro-WordPress-Plugin
+
+GitHub Plugin URI: ASU-KE/ASU-CAS-Maestro-WordPress-Plugin
+Primary Branch: master
+
 */
 
 /*
