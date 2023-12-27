@@ -3,19 +3,15 @@
 /**
  *  AsuDirectory
  *
- *  This is a static class for interacting with the ASU iSearch service.
- *  To display an ASU iSearch profile, you need their EID (Employee ID?):
- *  https://isearch.asu.edu/profile/{EID}
+ *  This is a static class for interacting with the ASU Search service.
  *
- *  Profile data can be retrieved as XML and JSON:
- *  to find out about a person given an asurite:
- *  https://asudir-solr.asu.edu/asudir/directory/select?q=asuriteId:{ASURITE}&wt=json
- *  https://asudir-solr.asu.edu/asudir/directory/select?q=asuriteId:{ASURITE}&wt=xml
+ *  Profile data can be retrieved as JSON:
+ *  https://search.asu.edu/api/v1/webdir-profiles/faculty-staff/filtered?asurite_ids={ASURITE_ID}
  *
- *  Thus, in order to access a user's iSearch profile page when you have their ASURITE,
- *  such as provided by the ASU CAS service, their EID must be retrieved using the XML or JSON service.
+ *  April-2023: Replacing references to asudir-solr endpoint with current end point from search.asu.edu
  *
  *  @author Nathan D. Rollins
+ *  @author Steven Ryan
  */
 class AsuDirectory {
 
@@ -26,231 +22,261 @@ class AsuDirectory {
    * @return Array
    */
   static public function getDirectoryInfoByAsurite($asurite) {
+
+    // Sanity check on the ASURITE ID to be searched.
     if ( $asurite == NULL || strlen( $asurite ) < 3 || strlen( $asurite ) > 12 ) {
       return NULL;
     }
     $asurite = urlencode( $asurite );
-    $json = file_get_contents( "https://asudir-solr.asu.edu/asudir/directory/select?q=asuriteId:" . $asurite . "&wt=json" );
-    if ( empty( $json ) ) {
-      return NULL;
+
+    $search_json = 'https://search.asu.edu/api/v1/webdir-profiles/faculty-staff/filtered?asurite_ids=' . $asurite . '&size=1&client=asu_wp_cas_plugin';
+
+    $search_request = wp_safe_remote_get( $search_json );
+
+    // Error check for invalid JSON.
+    if ( is_wp_error( $search_request ) ) {
+      return NULL; // Bail early.
     }
-    $info = json_decode ( $json, true );
-    if ( 0 == $info['response']['numFound'] ) {
-      return NULL;
+
+    $search_body   = wp_remote_retrieve_body( $search_request );
+    $search_data   = json_decode( $search_body );
+
+    if ( ! empty( $search_data ) ) {
+
+      // Returned JSON results indicate total_results = 0 if record not found.
+      if ( 0 == $search_data->meta->page->total_results ) {
+        return NULL;
+      }
+
+      // We're safe. Return the results portion of the record.
+      return $search_data->results[0];
     }
-    return $info;
   }
 
   /**
-   * Get user's EID from iSearch array
+   * Get user's EID from Search array
    *
    * @param  Array   $info
    * @return Integer
    */
   static public function getEid( $info ) {
-    if ( isset( $info['response']['docs'][0]['eid'] ) ) {
-      return intval( $info['response']['docs'][0]['eid'] );
+    if ( isset( $info->eid->raw ) ) {
+      return intval( isset( $info->eid->raw ) );
     }
     return "";
   }
 
   /**
-   * Get user's ASURITE from iSearch array
+   * Get user's ASURITE from Search array
    *
-   * A bit redundant, since we currently only retrieve the iSearch info using the ASURITE as key,
+   * A bit redundant, since we currently retrieve the Search info using the ASURITE as key,
    * but alternate key options may be useful later, making this method useful.
    *
    * @param  Array   $info
    * @return String
    */
   static public function getAsurite( $info ) {
-    if ( isset( $info['response']['docs'][0]['asuriteId'] ) ) {
-      return strval( $info['response']['docs'][0]['asuriteId'] );
+    if ( isset( $info->asurite_id->raw ) ) {
+      return strval( $info->asurite_id->raw );
     }
     return "";
   }
 
   /**
-   * Get user's full, display name from iSearch array
+   * Get user's full, display name from Search array
    *
    * @param  Array $info
    * @return String
    */
   static public function getDisplayName($info) {
-    if ( isset( $info['response']['docs'][0]['displayName'] ) ) {
-      return strval( $info['response']['docs'][0]['displayName'] );
+    if ( isset( $info->display_name->raw ) ) {
+      return strval( $info->display_name->raw );
     }
     return "";
   }
 
   /**
-   * Get user's last name from iSearch array
+   * Get user's last name from Search array
+   * April 2023 - Give preference to "preferred last name" field if present.
    *
    * @param  Array   $info
    * @return String
    */
   static public function getLastName($info) {
-    if ( isset( $info['response']['docs'][0]['lastName'] ) ) {
-      return strval( $info['response']['docs'][0]['lastName'] );
+
+    $lastname = '';
+
+    if ( isset( $info->last_name->raw ) ) {
+      $lastname = strval( $info->last_name->raw );
     }
-    return "";
+
+    if ( isset( $info->preferred_last_name->raw ) ) {
+      $lastname = strval( $info->preferred_last_name->raw );
+    }
+
+    return $lastname;
   }
 
   /**
-   * Get user's first name from iSearch array
+   * Get user's first name from Search array
+   * April 2023 - Give preference to "preferred first name" field if present.
    *
    * @param  Array   $info
    * @return String
    */
   static public function getFirstName($info) {
-    if ( isset( $info['response']['docs'][0]['firstName'] ) ) {
-      return strval( $info['response']['docs'][0]['firstName'] );
+
+    $firstname = '';
+
+    if ( isset( $info->first_name->raw ) ) {
+      $firstname = strval( $info->first_name->raw );
     }
-    return "";
+
+    if ( isset( $info->preferred_first_name->raw ) ) {
+      $firstname = strval( $info->preferred_first_name->raw );
+    }
+
+    return $firstname;
   }
 
   /**
-   * Get user's email address from iSearch array
+   * Get user's email address from Search array
    *
    * @param  Array   $info
    * @return String
    */
   static public function getEmail($info) {
-    if ( isset( $info['response']['docs'][0]['emailAddress'] ) ) {
-      return strval( $info['response']['docs'][0]['emailAddress'] );
+    if ( isset( $info->email_address->raw ) ) {
+      return strval( $info->email_address->raw );
     }
     return "";
   }
 
   /**
-   * Return T/F whether a user is listed as a student in iSearch
+   * Return T/F whether a user is listed as a student in Search
+   *
+   * April-2023: Public results from Search no longer include student data.
+   * Function will now always return false.
    *
    * @param  Array   $info
    * @return String
    */
   static public function isStudent( $info ) {
-    if ( isset( $info['response']['docs'][0]['affiliations'] ) ) {
-      foreach ( $info['response']['docs'][0]['affiliations'] as $affiliation ) {
-        if ( 'Student' == $affiliation ) {
-          return TRUE;
-        }
-      }
-    }
     return FALSE;
   }
 
   /**
    * Return T/F whether a user is listed as faculty in iSearch
    *
+   * Faculty rankings are now a numerical attribute in Search.
+   * Any number besides 99 is a faculty member.
+   *
    * @param  Array   $info
    * @return String
    */
   static public function isFaculty( $info ) {
-    if ( isset( $info['response']['docs'][0]['affiliations'] ) ) {
-      foreach ( $info['response']['docs'][0]['affiliations'] as $affiliation ) {
-        if ( 'Employee' == $affiliation ) {
-          foreach ( $info['response']['docs'][0]['emplClasses'] as $employee_class ) {
-            if ( 'Faculty' == $employee_class ) {
-              return TRUE;
-            }
-          }
-        }
-      }
-    }
-    return FALSE;
-  }
 
-  /**
-   * Return T/F whether a user is listed as staff in iSearch
-   *
-   * Specifically, this function searches for the 'Employee' affiliation AND 'University Staff' employee classification.
-   * Student workers and Graduate Assistants have the employee affiliation in addition to their Student affiliation,
-   * but they have a different employee classification.
-   *
-   * @param  Array   $info
-   * @return String
-   */
-  static public function isStaff( $info ) {
-    if ( isset( $info['response']['docs'][0]['affiliations'] ) ) {
-      foreach ( $info['response']['docs'][0]['affiliations'] as $affiliation ) {
-        if ( 'Employee' == $affiliation ) {
-          foreach ( $info['response']['docs'][0]['emplClasses'] as $employee_class ) {
-            if ( 'University Staff' == $employee_class ) {
-              return TRUE;
-            }
-          }
-        }
-      }
-    }
-    return FALSE;
-  }
+    if ( isset( $info->faculty_rank->raw[0] ) ) {
 
-  /**
-   * Get user's ASU primary affiliation/status (student, faculty, staff) from iSearch array
-   *
-   * This is a somewhat personalised function written for Sustainability Connect's (sustainabilityconnect.asu.edu) needs.
-   * Just in case a university staff user might also be classified as a student if they are enrolled for students,
-   * this function prioritises employee classification: Student > Faculty > Staff.
-   *
-   * @param  Array   $info
-   * @return String
-   */
-  static public function getUserType( $info ) {
-    $student = FALSE;
-    $faculty = FALSE;
-    $staff = FALSE;
-    if ( isset( $info['response']['docs'][0]['affiliations'] ) ) {
-      foreach ( $info['response']['docs'][0]['affiliations'] as $affiliation ) {
-        if ( 'Student' == $affiliation ) {
-          $student = TRUE;
-        }
-        if ( 'Employee' == $affiliation ) {
-          foreach ( $info['response']['docs'][0]['emplClasses'] as $employee_class ) {
-            if ( 'Faculty' == $employee_class ) {
-              $faculty = TRUE;
-            } elseif ( 'University Staff' == $employee_class ) {
-              $staff = TRUE;
-            }
-          }
-        }
+      if ( 99 !== $info->faculty_rank->raw[0] ) {
+        return TRUE;
       }
-    }
-    // in case, user has multiple classifications (staff enrolled as student)
-    // role precedence: student > faculty > staff
-    if ( $student ) {
-      return 'student';
-    } elseif ( $faculty ) {
-      return 'faculty';
-    } elseif ( $staff ) {
-      return 'staff';
-    } else {
+
       return FALSE;
     }
   }
 
   /**
-   * Return T/F whether a user is listed in iSearch as majoring in a degree program from the School of Sustainability
+   * Return T/F whether a user is listed as staff in iSearch
+   *
+   * Faculty rankings are now a numerical attribute in Search.
+   * A returned value of 99 indicates a staff member.
    *
    * @param  Array   $info
    * @return String
    */
-  static public function hasSosPlan( $info ) {
-    if ( $info['response']['numFound'] > 0 ) {
-      if ( !empty( $info['response']['docs'][0]['programs'] ) ) {
-        foreach ( $info['response']['docs'][0]['programs'] as $program ) {
-          // look for SOS program
-          if ( 'School of Sustainability' == $program ) {
-            foreach ( $info['response']['docs'][0]['majors'] as $major ) {
-              // is student majoring in Sustainability
-              if ( 'Sustainability' == $major ) {
-                return TRUE;
-              }
-            }
-          }
-        }
-      }
-    }
+  static public function isStaff( $info ) {
+    if ( isset( $info->faculty_rank->raw[0] ) ) {
 
-    return FALSE;
+      if ( 99 == $info->faculty_rank->raw[0] ) {
+        return TRUE;
+      }
+
+      return FALSE;
+    }
   }
+
+  // April-2023: The following two public functions are no longer relevant given the scope of the new Search results.
+  // getUserType can be replicated by calles to either isStaff or isFaculty. Students are excluded from the results.
+  // hasSOSPlan was looking for a particular degree program assigned to a student record.
+
+  // /**
+  //  * Get user's ASU primary affiliation/status (student, faculty, staff) from iSearch array
+  //  *
+  //  * This is a somewhat personalised function written for Sustainability Connect's (sustainabilityconnect.asu.edu) needs.
+  //  * Just in case a university staff user might also be classified as a student if they are enrolled for students,
+  //  * this function prioritises employee classification: Student > Faculty > Staff.
+  //  *
+  //  * @param  Array   $info
+  //  * @return String
+  //  */
+  // static public function getUserType( $info ) {
+  //   $student = FALSE;
+  //   $faculty = FALSE;
+  //   $staff = FALSE;
+  //   if ( isset( $info['response']['docs'][0]['affiliations'] ) ) {
+  //     foreach ( $info['response']['docs'][0]['affiliations'] as $affiliation ) {
+  //       if ( 'Student' == $affiliation ) {
+  //         $student = TRUE;
+  //       }
+  //       if ( 'Employee' == $affiliation ) {
+  //         foreach ( $info['response']['docs'][0]['emplClasses'] as $employee_class ) {
+  //           if ( 'Faculty' == $employee_class ) {
+  //             $faculty = TRUE;
+  //           } elseif ( 'University Staff' == $employee_class ) {
+  //             $staff = TRUE;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //   // in case, user has multiple classifications (staff enrolled as student)
+  //   // role precedence: student > faculty > staff
+  //   if ( $student ) {
+  //     return 'student';
+  //   } elseif ( $faculty ) {
+  //     return 'faculty';
+  //   } elseif ( $staff ) {
+  //     return 'staff';
+  //   } else {
+  //     return FALSE;
+  //   }
+  // }
+
+  // /**
+  //  * Return T/F whether a user is listed in iSearch as majoring in a degree program from the School of Sustainability
+  //  *
+  //  * @param  Array   $info
+  //  * @return String
+  //  */
+  // static public function hasSosPlan( $info ) {
+  //   if ( $info['response']['numFound'] > 0 ) {
+  //     if ( !empty( $info['response']['docs'][0]['programs'] ) ) {
+  //       foreach ( $info['response']['docs'][0]['programs'] as $program ) {
+  //         // look for SOS program
+  //         if ( 'School of Sustainability' == $program ) {
+  //           foreach ( $info['response']['docs'][0]['majors'] as $major ) {
+  //             // is student majoring in Sustainability
+  //             if ( 'Sustainability' == $major ) {
+  //               return TRUE;
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   return FALSE;
+  // }
 }
+
